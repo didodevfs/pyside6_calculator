@@ -44,6 +44,7 @@ class Window(QMainWindow):
 
         self.first_number = None
         self.second_number = None
+        self.result = None
         self.operator = None
         self._equation = ''
 
@@ -65,12 +66,6 @@ class Window(QMainWindow):
 
     @equation.setter
     def equation(self, equation):
-        # if self._equation[-3:] == '** ':
-        #     self._equation = equation
-        #     print('entrou')
-        #     history_equation = self._equation.replace('**', '^')
-        #     self.history.setText(history_equation)          
-        # else:
         self._equation = equation
         self.history.setText(equation)
 
@@ -94,8 +89,6 @@ class Button(QPushButton):
 
         if button_text in '+-/*^':
             self._special_type = 'operator'
-        # elif button_text in '^':
-        #     self._special_type = 'op_pow'
         elif button_text in '◀':
             self._special_type = 'del'
         elif button_text in 'C':
@@ -114,7 +107,7 @@ class Button(QPushButton):
             slot_method = self.get_operator
             self.clicked.connect(slot_method)
         if self._special_type == 'op_pow':
-            slot_method = self.get_operator # _pow
+            slot_method = self.get_operator
             self.clicked.connect(slot_method)
         if self._special_type == 'equal':
             slot_method = self.get_equal
@@ -129,12 +122,12 @@ class Button(QPushButton):
 
     def get_number(self):
         if not self.win.operator:
-            try: # posso chamar outra função pra fazer os dois blocos de try/except
+            try:
                 button_text = self.text()
                 input = self.win.display.text() + button_text
                 self.win.first_number = float(input)
                 self.win.display.insert(button_text)
-                self.win.equation = f'{self.win.first_number}' # += button_text
+                self.win.equation = f'{self.win.first_number}'
             except Exception as error:
                 print(error)
         
@@ -144,7 +137,7 @@ class Button(QPushButton):
                 input_test = self.win.display.text() + button_text
                 self.win.second_number = float(input_test)
                 self.win.display.insert(button_text)
-                self.win.equation = f'{self.win.first_number} {self.win.operator} {self.win.second_number}'# += button_text
+                self.win.equation = f'{self.win.first_number} {self.win.operator} {self.win.second_number}'
             except Exception as error:
                 print(error)
 
@@ -154,17 +147,10 @@ class Button(QPushButton):
             button_text = self.text()
             self.win.display.clear()
             self.win.operator = button_text
-            self.win.equation = f'{self.win.first_number} {self.win.operator} ' # += button_text
-
-
-    # def get_operator_pow(self):
-    #     if self.win.first_number and not self.win.operator:
-    #         self.win.display.clear()
-    #         self.win.operator = '**'
-    #         self.win.equation = f'{self.win.first_number} {self.win.operator} '
+            self.win.equation = f'{self.win.first_number} {self.win.operator} '
 
     
-    def get_equal(self): # NA HORA DE DAR O RESULTADO MUDA O STORY DE ^ PRA ** AJUSTAR!
+    def get_equal(self):
         if self.win.second_number and '=' not in self.win.equation:
             try:
                 if self.win.operator == '^':
@@ -174,8 +160,10 @@ class Button(QPushButton):
                 if self.win.operator == '**':
                     self.win.operator = '^'
                     self.win.equation = f'{self.win.first_number} {self.win.operator} {self.win.second_number}'
-                self.win.equation += f' = {result}'
-                self.win.display.setText(str(result))
+                self.win.result = (result)
+                self.win.equation += f' = {self.win.result}'
+                self.win.display.setText(str(self.win.result))
+
             except Exception as error:
                 self.win.display.setText('CONTA INVÁLIDA')
                 print(error)
