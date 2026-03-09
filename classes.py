@@ -188,11 +188,14 @@ class Button(QPushButton):
 
     def get_delete(self): # DÁ ERRO QUANDO APERTA APÓS UM OPERATOR, AJUSTAR
         self.win.display.backspace()
+        if self.win.result:
+            self.win.result = self.win.display.text()
+            self._result_to_first_number()
         if self.win.second_number:
             self.win.second_number = self.win.display.text()
             self.win.equation = f'{self.win.first_number} {self.win.operator} {self.win.second_number}'
         if not self.win.second_number:
-            self.win.first_number = float(self.win.display.text())
+            self.win.first_number = self.win.display.text()
             self.win.equation = f'{self.win.first_number}'
 
     
