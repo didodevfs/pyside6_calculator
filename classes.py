@@ -121,6 +121,9 @@ class Button(QPushButton):
     
 
     def get_number(self):
+        if self.text() == '🐍':
+            self._didodev()
+
         if self.win.result:
             self._result_to_first_number()
         
@@ -199,6 +202,10 @@ class Button(QPushButton):
         self.win.operator = None
         self.win.equation = ''
         self.win.result = None
+
+    def _didodev(self):
+        self.get_reset()
+        self.win.display.setText('🐍 DidoDevFS 🐍')
 
 
 class ButtonsGrid(QGridLayout):
