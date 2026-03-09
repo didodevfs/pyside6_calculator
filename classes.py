@@ -121,6 +121,9 @@ class Button(QPushButton):
     
 
     def get_number(self):
+        if self.win.result:
+            self._result_to_first_number()
+        
         if not self.win.operator:
             try:
                 button_text = self.text()
@@ -143,6 +146,9 @@ class Button(QPushButton):
 
 
     def get_operator(self):
+        if self.win.result:
+            self._result_to_first_number()
+
         if self.win.first_number and not self.win.operator:
             button_text = self.text()
             self.win.display.clear()
@@ -186,6 +192,13 @@ class Button(QPushButton):
             self.win.first_number = float(self.win.display.text())
             self.win.equation = f'{self.win.first_number}'
 
+    
+    def _result_to_first_number(self):
+        self.win.first_number = self.win.result
+        self.win.second_number = None
+        self.win.operator = None
+        self.win.equation = ''
+        self.win.result = None
 
 
 class ButtonsGrid(QGridLayout):
