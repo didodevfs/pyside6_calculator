@@ -1,4 +1,4 @@
-from PySide6.QtWidgets import QMainWindow, QWidget, QVBoxLayout, QLineEdit, QLabel, QGridLayout, QPushButton
+from PySide6.QtWidgets import QMainWindow, QWidget, QVBoxLayout, QLineEdit, QLabel, QGridLayout, QPushButton, QMessageBox
 from PySide6.QtCore import Qt, Slot
 from variables import TEXT_MARGIN, MAIN_FONT_SIZE, MINIMUN_WIDTH
 
@@ -69,6 +69,10 @@ class Window(QMainWindow):
         self._equation = equation
         self.history.setText(equation)
 
+    def error_msg_box(self, text):
+        msg_box = QMessageBox(QMessageBox.Icon.Critical, 'Python', text)
+        msg_box.exec()
+
 
 
 class Button(QPushButton):
@@ -95,8 +99,6 @@ class Button(QPushButton):
             self._special_type = 'reset'
         elif button_text in '=':
             self._special_type = 'equal'
-        else:
-            print('PEGAR ERRO')
 
 
     def connect_button_clicked(self):
@@ -174,7 +176,7 @@ class Button(QPushButton):
                 self.win.display.setText(str(self.win.result))
 
             except Exception as error:
-                self.win.display.setText('CONTA INVÁLIDA')
+                self.win.error_msg_box('Que danado de conta é essa?!')
                 print(error)
     
 

@@ -30,7 +30,7 @@ if __name__ == '__main__':
     window = Window(display, history)
     window.setWindowIcon(icon)
     window.add_widget_to_main_layout(history)
-    window.add_widget_to_main_layout(display) 
+    window.add_widget_to_main_layout(display)
     # Teclado
     virtual_keyboard = ButtonsGrid(window)
     window.main_layout.addLayout(virtual_keyboard)
