@@ -72,9 +72,20 @@ class Window(QMainWindow):
     def error_msg_box(self, text):
         msg_box = QMessageBox(QMessageBox.Icon.Critical, 'Erro', text)
 
-        msg_box.setStandardButtons(msg_box.StandardButton.Cancel) # Troca o texto padrão do botão que por padrão é "Ok". Colocando aqui só para ficar de aprendizado
+        msg_box.setStandardButtons(msg_box.StandardButton.Cancel | msg_box.StandardButton.Ok) # Troca o texto padrão do botão que por padrão é "Ok". Colocando aqui só para ficar de aprendizado
         msg_box.button(msg_box.StandardButton.Cancel).setText('Beleza 👍')
+        msg_box.button(msg_box.StandardButton.Ok).setText('Não Beleza 👎')
 
+        selected_button = msg_box.exec()
+
+        if selected_button == msg_box.StandardButton.Ok:
+            self.zoeira_msg_box()
+
+
+    def zoeira_msg_box(self):
+        msg_box = QMessageBox(QMessageBox.Icon.Question,'Py', 'uma pena')
+        msg_box.setStandardButtons(msg_box.StandardButton.Ok)
+        msg_box.button(msg_box.StandardButton.Ok).setText('🐍')
         msg_box.exec()
 
 
