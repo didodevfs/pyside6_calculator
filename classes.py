@@ -118,7 +118,7 @@ class Button(QPushButton):
             slot_method = self.get_delete
             self.clicked.connect(slot_method)
     
-
+    @Slot()
     def get_number(self):
         if self.text() == '🐍':
             self._didodev()
@@ -149,7 +149,7 @@ class Button(QPushButton):
                 print(error)
                 self.win.error_msg_box('Digite um número antes do ponto')
 
-
+    @Slot()
     def get_operator(self):
         if self.win.result:
             self._result_to_first_number()
@@ -162,7 +162,7 @@ class Button(QPushButton):
         else: # self.win.first_number
             self.win.error_msg_box('Digite um número primeiro')
 
-    
+    @Slot()
     def get_equal(self):
         if (self.win.second_number or self.win.second_number == 0.0) and '=' not in self.win.equation:
             try:
@@ -183,7 +183,7 @@ class Button(QPushButton):
             except Exception:
                 self.win.error_msg_box('Que danado de conta é essa?!')
     
-
+    @Slot()
     def get_reset(self):
         self.win.display.clear()
         self.win.equation = ''
@@ -192,7 +192,7 @@ class Button(QPushButton):
         self.win.operator = None
         self.win.result = None
 
-
+    @Slot()
     def get_delete(self): # DÁ ERRO QUANDO APERTA APÓS UM OPERATOR, AJUSTAR
         self.win.display.backspace()
         if self.win.result:
