@@ -108,9 +108,6 @@ class Button(QPushButton):
         if self._special_type == 'operator':
             slot_method = self.get_operator
             self.clicked.connect(slot_method)
-        if self._special_type == 'op_pow':
-            slot_method = self.get_operator
-            self.clicked.connect(slot_method)
         if self._special_type == 'equal':
             slot_method = self.get_equal
             self.clicked.connect(slot_method)
@@ -138,6 +135,7 @@ class Button(QPushButton):
                 self.win.equation = f'{self.win.first_number}'
             except Exception as error:
                 print(error)
+                self.win.error_msg_box('Digite um número antes do ponto')
         
         else:
             try:
@@ -148,18 +146,19 @@ class Button(QPushButton):
                 self.win.equation = f'{self.win.first_number} {self.win.operator} {self.win.second_number}'
             except Exception as error:
                 print(error)
+                self.win.error_msg_box('Digite um número antes do ponto')
 
 
     def get_operator(self):
         if self.win.result:
             self._result_to_first_number()
 
-        if self.win.first_number and not self.win.operator:
+        if self.win.first_number: # and not self.win.operator
             button_text = self.text()
             self.win.display.clear()
             self.win.operator = button_text
             self.win.equation = f'{self.win.first_number} {self.win.operator} '
-        else:
+        else: # self.win.first_number
             self.win.error_msg_box('Digite um número primeiro')
 
     
@@ -179,7 +178,6 @@ class Button(QPushButton):
 
             except Exception as error:
                 self.win.error_msg_box('Que danado de conta é essa?!')
-                print(error)
     
 
     def get_reset(self):
@@ -188,6 +186,7 @@ class Button(QPushButton):
         self.win.first_number = None
         self.win.second_number = None
         self.win.operator = None
+        # self.win.result = None
 
 
     def get_delete(self): # DÁ ERRO QUANDO APERTA APÓS UM OPERATOR, AJUSTAR
