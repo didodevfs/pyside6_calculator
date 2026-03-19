@@ -135,7 +135,8 @@ class Button(QPushButton):
                 self.win.equation = f'{self.win.first_number}'
             except Exception as error:
                 print(error)
-                self.win.error_msg_box('Digite um número antes do ponto')
+                if self.text() != '🐍':
+                    self.win.error_msg_box('Digite um número antes do ponto')
         
         else:
             try:
@@ -153,7 +154,7 @@ class Button(QPushButton):
         if self.win.result:
             self._result_to_first_number()
 
-        if self.win.first_number: # and not self.win.operator
+        if self.win.first_number or self.win.first_number == 0.0: # and not self.win.operator
             button_text = self.text()
             self.win.display.clear()
             self.win.operator = button_text
@@ -163,7 +164,7 @@ class Button(QPushButton):
 
     
     def get_equal(self):
-        if self.win.second_number and '=' not in self.win.equation:
+        if (self.win.second_number or self.win.second_number == 0.0) and '=' not in self.win.equation:
             try:
                 if self.win.operator == '^':
                     self.win.operator = '**'
@@ -176,7 +177,10 @@ class Button(QPushButton):
                 self.win.equation += f' = {self.win.result}'
                 self.win.display.setText(str(self.win.result))
 
-            except Exception as error:
+            except ZeroDivisionError:
+                self.win.error_msg_box('Não dá pra dividir por zero')
+            
+            except Exception:
                 self.win.error_msg_box('Que danado de conta é essa?!')
     
 
