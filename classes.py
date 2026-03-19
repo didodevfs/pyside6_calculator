@@ -186,7 +186,7 @@ class Button(QPushButton):
         self.win.first_number = None
         self.win.second_number = None
         self.win.operator = None
-        # self.win.result = None
+        self.win.result = None
 
 
     def get_delete(self): # DÁ ERRO QUANDO APERTA APÓS UM OPERATOR, AJUSTAR
