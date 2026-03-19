@@ -123,7 +123,7 @@ class Button(QPushButton):
         if self.text() == '🐍':
             self._didodev()
 
-        if self.win.result:
+        if self.win.result or self.win.result == 0.0:
             self._result_to_first_number()
         
         if not self.win.operator:
@@ -151,14 +151,17 @@ class Button(QPushButton):
 
     @Slot()
     def get_operator(self):
-        if self.win.result:
+        if self.win.result or self.win.result == 0.0:
             self._result_to_first_number()
 
         if self.win.first_number or self.win.first_number == 0.0: # and not self.win.operator
-            button_text = self.text()
-            self.win.display.clear()
-            self.win.operator = button_text
-            self.win.equation = f'{self.win.first_number} {self.win.operator} '
+            if self.win.second_number or self.win.second_number == 0.0:
+                self.win.error_msg_box('Você não pode adicionar outro operador neste momento')
+            else:
+                button_text = self.text()
+                self.win.display.clear()
+                self.win.operator = button_text
+                self.win.equation = f'{self.win.first_number} {self.win.operator} '
         else: # self.win.first_number
             self.win.error_msg_box('Digite um número primeiro')
 
@@ -195,10 +198,10 @@ class Button(QPushButton):
     @Slot()
     def get_delete(self): # DÁ ERRO QUANDO APERTA APÓS UM OPERATOR, AJUSTAR
         self.win.display.backspace()
-        if self.win.result:
+        if self.win.result or self.win.result == 0.0:
             self.win.result = self.win.display.text()
             self._result_to_first_number()
-        if self.win.second_number:
+        if self.win.second_number or self.win.second_number == 0.0:
             self.win.second_number = self.win.display.text()
             self.win.equation = f'{self.win.first_number} {self.win.operator} {self.win.second_number}'
         if not self.win.second_number:
