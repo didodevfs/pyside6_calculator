@@ -159,6 +159,8 @@ class Button(QPushButton):
             self.win.display.clear()
             self.win.operator = button_text
             self.win.equation = f'{self.win.first_number} {self.win.operator} '
+        else:
+            self.win.error_msg_box('Digite um número primeiro')
 
     
     def get_equal(self):
