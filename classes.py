@@ -70,7 +70,11 @@ class Window(QMainWindow):
         self.history.setText(equation)
 
     def error_msg_box(self, text):
-        msg_box = QMessageBox(QMessageBox.Icon.Critical, 'Python', text)
+        msg_box = QMessageBox(QMessageBox.Icon.Critical, 'Erro', text)
+
+        msg_box.setStandardButtons(msg_box.StandardButton.Cancel) # Troca o texto padrão do botão que por padrão é "Ok". Colocando aqui só para ficar de aprendizado
+        msg_box.button(msg_box.StandardButton.Cancel).setText('Beleza 👍')
+
         msg_box.exec()
 
 
