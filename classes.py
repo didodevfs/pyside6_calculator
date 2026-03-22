@@ -1,6 +1,6 @@
 from PySide6.QtWidgets import QMainWindow, QWidget, QVBoxLayout, QLineEdit, QLabel, QGridLayout, QPushButton, QMessageBox
 from PySide6.QtCore import Qt, Slot
-from variables import TEXT_MARGIN, MAIN_FONT_SIZE, MINIMUN_WIDTH
+from styles import TEXT_MARGIN, MAIN_FONT_SIZE, MINIMUN_WIDTH
 
 class Display(QLineEdit):
     def __init__(self, *args, **kwargs):
@@ -114,6 +114,7 @@ class Button(QPushButton):
             self._special_type = 'reset'
         elif button_text in '=':
             self._special_type = 'equal'
+
         return self._special_type
 
 
@@ -130,6 +131,7 @@ class Button(QPushButton):
             slot_method = self.get_delete
         
         return self.clicked.connect(slot_method)
+
 
     @Slot()
     def get_number(self):
@@ -162,6 +164,7 @@ class Button(QPushButton):
                 print(error)
                 self.win.error_msg_box('Digite um número antes do ponto')
 
+
     @Slot()
     def get_operator(self):
         if self.win.result or self.win.result == 0.0:
@@ -177,6 +180,7 @@ class Button(QPushButton):
                 self.win.equation = f'{self.win.first_number} {self.win.operator} '
         else: # self.win.first_number
             self.win.error_msg_box('Digite um número primeiro')
+
 
     @Slot()
     def get_equal(self):
@@ -199,6 +203,7 @@ class Button(QPushButton):
             except Exception:
                 self.win.error_msg_box('Que danado de conta é essa?!')
     
+
     @Slot()
     def get_reset(self):
         self.win.display.clear()
@@ -207,6 +212,7 @@ class Button(QPushButton):
         self.win.second_number = None
         self.win.operator = None
         self.win.result = None
+
 
     @Slot()
     def get_delete(self): # DÁ ERRO QUANDO APERTA APÓS UM OPERATOR, AJUSTAR

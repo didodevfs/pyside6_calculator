@@ -3,7 +3,7 @@ import sys
 from PySide6.QtGui import QIcon
 from PySide6.QtWidgets import QApplication
 from classes import Window, Display, History, ButtonsGrid
-from variables import ICON_PATH
+from tools import ICON_PATH
 from styles import setup_theme
 
 

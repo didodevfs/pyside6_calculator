@@ -3,6 +3,11 @@
 
 import qdarkstyle
 
+# Sizing:
+TEXT_MARGIN = 15
+MAIN_FONT_SIZE = 40
+MINIMUN_WIDTH = 425
+
 qss = f"""
     QPushButton[css_class="special_button"] {{
         color: #fff;
