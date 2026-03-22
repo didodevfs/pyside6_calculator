@@ -1,6 +1,7 @@
 from PySide6.QtWidgets import QMainWindow, QWidget, QVBoxLayout, QLineEdit, QLabel, QGridLayout, QPushButton, QMessageBox
 from PySide6.QtCore import Qt, Slot
 from styles import TEXT_MARGIN, MAIN_FONT_SIZE, MINIMUN_WIDTH
+from tools import reseting_win_attributes
 
 class Display(QLineEdit):
     def __init__(self, *args, **kwargs):
@@ -207,11 +208,7 @@ class Button(QPushButton):
     @Slot()
     def get_reset(self):
         self.win.display.clear()
-        self.win.equation = ''
-        self.win.first_number = None
-        self.win.second_number = None
-        self.win.operator = None
-        self.win.result = None
+        reseting_win_attributes(self.win)
 
 
     @Slot()
@@ -229,11 +226,9 @@ class Button(QPushButton):
 
     
     def _result_to_first_number(self):
-        self.win.first_number = self.win.result
-        self.win.second_number = None
-        self.win.operator = None
-        self.win.equation = ''
-        self.win.result = None
+        first_number = self.win.result
+        reseting_win_attributes(self.win)
+        self.win.first_number = first_number
 
     def _didodev(self):
         self.get_reset()
