@@ -73,8 +73,8 @@ class Window(QMainWindow):
         msg_box = QMessageBox(QMessageBox.Icon.Critical, 'Erro', text)
 
         msg_box.setStandardButtons(msg_box.StandardButton.Cancel | msg_box.StandardButton.Ok) # Troca o texto padrão do botão que por padrão é "Ok". Colocando aqui só para ficar de aprendizado
-        msg_box.button(msg_box.StandardButton.Cancel).setText('Beleza 👍')
-        msg_box.button(msg_box.StandardButton.Ok).setText('Não Beleza 👎')
+        msg_box.button(msg_box.StandardButton.Cancel).setText('👍')
+        msg_box.button(msg_box.StandardButton.Ok).setText('👎')
 
         selected_button = msg_box.exec()
 
@@ -114,25 +114,23 @@ class Button(QPushButton):
             self._special_type = 'reset'
         elif button_text in '=':
             self._special_type = 'equal'
+        return self._special_type
 
 
-    def connect_button_clicked(self):
-        if not self._special_type:
+    def connect_button_clicked(self, special_type):
+        if not special_type:
             slot_method = self.get_number
-            self.clicked.connect(slot_method)
-        if self._special_type == 'operator':
+        if special_type == 'operator':
             slot_method = self.get_operator
-            self.clicked.connect(slot_method)
-        if self._special_type == 'equal':
+        if special_type == 'equal':
             slot_method = self.get_equal
-            self.clicked.connect(slot_method)
-        if self._special_type == 'reset':
+        if special_type == 'reset':
             slot_method = self.get_reset
-            self.clicked.connect(slot_method)
-        if self._special_type == 'del':
+        if special_type == 'del':
             slot_method = self.get_delete
-            self.clicked.connect(slot_method)
-    
+        
+        return self.clicked.connect(slot_method)
+
     @Slot()
     def get_number(self):
         if self.text() == '🐍':
@@ -260,4 +258,4 @@ class ButtonsGrid(QGridLayout):
                 if button_text in '*/-+^=C◀':
                     button.set_special_button(button_text)
 
-                button.connect_button_clicked()
+                button.connect_button_clicked(button._special_type)
