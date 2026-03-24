@@ -70,24 +70,24 @@ class Window(QMainWindow):
         self._equation = equation
         self.history.setText(equation)
 
+
     def error_msg_box(self, text):
+        msg_box = QMessageBox(QMessageBox.Icon.Critical, 'Erro', text)       
+        msg_box.exec()
+
+
+    def wtf_msg_box(self, text, button):
         msg_box = QMessageBox(QMessageBox.Icon.Critical, 'Erro', text)
 
-        msg_box.setStandardButtons(msg_box.StandardButton.Cancel | msg_box.StandardButton.Ok) # Troca o texto padrão do botão que por padrão é "Ok". Colocando aqui só para ficar de aprendizado
-        msg_box.button(msg_box.StandardButton.Cancel).setText('👍')
-        msg_box.button(msg_box.StandardButton.Ok).setText('👎')
+        msg_box.setStandardButtons(msg_box.StandardButton.Cancel | msg_box.StandardButton.Ok)
+      
+        msg_box.button(msg_box.StandardButton.Cancel).setText('Limpar e Continuar')
+        msg_box.button(msg_box.StandardButton.Ok).setText('Ok 👍')
 
         selected_button = msg_box.exec()
 
-        if selected_button == msg_box.StandardButton.Ok:
-            self.zoeira_msg_box()
-
-
-    def zoeira_msg_box(self):
-        msg_box = QMessageBox(QMessageBox.Icon.Question,'Py', 'uma pena')
-        msg_box.setStandardButtons(msg_box.StandardButton.Ok)
-        msg_box.button(msg_box.StandardButton.Ok).setText('🐍')
-        msg_box.exec()
+        if selected_button == msg_box.StandardButton.Cancel:
+            button.get_reset()
 
 
 
@@ -202,7 +202,7 @@ class Button(QPushButton):
                 self.win.error_msg_box('Não dá pra dividir por zero')
             
             except Exception:
-                self.win.error_msg_box('Que danado de conta é essa?!')
+                self.win.wtf_msg_box('Que danado de conta é essa?!', self)
     
 
     @Slot()
