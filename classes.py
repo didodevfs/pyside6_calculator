@@ -212,7 +212,7 @@ class Button(QPushButton):
 
 
     @Slot()
-    def get_delete(self): # DÁ ERRO QUANDO APERTA APÓS UM OPERATOR, AJUSTAR
+    def get_delete(self):
         self.win.display.backspace()
         if self.win.result or self.win.result == 0.0:
             self.win.result = self.win.display.text()
@@ -221,8 +221,11 @@ class Button(QPushButton):
             self.win.second_number = self.win.display.text()
             self.win.equation = f'{self.win.first_number} {self.win.operator} {self.win.second_number}'
         if not self.win.second_number:
-            self.win.first_number = self.win.display.text()
-            self.win.equation = f'{self.win.first_number}'
+            if self.win.operator:
+                self.win.error_msg_box('Não há nada no display para apagar')
+            else:
+                self.win.first_number = self.win.display.text()
+                self.win.equation = f'{self.win.first_number}'
 
     
     def _result_to_first_number(self):
