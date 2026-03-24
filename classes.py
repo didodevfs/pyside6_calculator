@@ -79,6 +79,7 @@ class Window(QMainWindow):
     def wtf_msg_box(self, text, button):
         msg_box = QMessageBox(QMessageBox.Icon.Critical, 'Erro', text)
 
+        msg_box.setInformativeText('O botão "Ok 👍" fará você continuar mesmo assim')
         msg_box.setStandardButtons(msg_box.StandardButton.Cancel | msg_box.StandardButton.Ok)
       
         msg_box.button(msg_box.StandardButton.Cancel).setText('Limpar e Continuar')
