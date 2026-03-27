@@ -1,5 +1,6 @@
 from PySide6.QtWidgets import QMainWindow, QWidget, QVBoxLayout, QLineEdit, QLabel, QGridLayout, QPushButton, QMessageBox
-from PySide6.QtCore import Qt, Slot
+from PySide6.QtCore import Qt, Slot, Signal
+from PySide6.QtGui import QKeyEvent
 from styles import TEXT_MARGIN, MAIN_FONT_SIZE, MINIMUN_WIDTH
 from tools import reseting_win_attributes
 
@@ -16,6 +17,20 @@ class Display(QLineEdit):
         self.setMinimumWidth(MINIMUN_WIDTH)
         self.setAlignment(Qt.AlignmentFlag.AlignRight)
         self.setTextMargins(*margins)
+
+
+    # def keyPressEvent(self, event: QKeyEvent) -> None:
+    #     key = event.key()
+    #     enter = key in [Qt.Key.Key_Enter, Qt.Key.Key_Return]
+    #     number_one = Qt.Key.Key_1
+
+    #     if enter:
+    #         print('pressionou enter')
+
+    #     if number_one:
+    #         print('1')
+        
+    #     return super().keyPressEvent(event) # isso aqui faz aparecer no display, se eu retirar pega o evento mas não aparece
 
 
 
@@ -110,11 +125,11 @@ class Button(QPushButton):
 
         if button_text in '+-/*^':
             self._special_type = 'operator'
-        elif button_text in '◀':
+        elif button_text == '◀':
             self._special_type = 'del'
-        elif button_text in 'C':
+        elif button_text == 'C':
             self._special_type = 'reset'
-        elif button_text in '=':
+        elif button_text == '=':
             self._special_type = 'equal'
 
         return self._special_type
@@ -205,8 +220,9 @@ class Button(QPushButton):
             except OverflowError:
                 self.win.error_msg_box('Essa conta é muito grande e não pode ser realizada!')
             
-            except Exception:
+            except Exception as error:
                 self.win.wtf_msg_box('Que danado de conta é essa?!', self)
+                print(error)
     
 
     @Slot()
