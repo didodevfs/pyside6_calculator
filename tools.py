@@ -5,4 +5,4 @@ def reseting_win_attributes(self):
     self.first_number = None
     self.second_number = None
     self.operator = None
-    self.result = None    
+    self.result = None

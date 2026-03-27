@@ -201,6 +201,9 @@ class Button(QPushButton):
 
             except ZeroDivisionError:
                 self.win.error_msg_box('Não dá pra dividir por zero')
+
+            except OverflowError:
+                self.win.error_msg_box('Essa conta é muito grande e não pode ser realizada!')
             
             except Exception:
                 self.win.wtf_msg_box('Que danado de conta é essa?!', self)
