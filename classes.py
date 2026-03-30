@@ -5,6 +5,8 @@ from styles import TEXT_MARGIN, MAIN_FONT_SIZE, MINIMUN_WIDTH
 from tools import reseting_win_attributes
 
 class Display(QLineEdit):
+    signal = Signal()
+    
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.set_style()
@@ -19,18 +21,20 @@ class Display(QLineEdit):
         self.setTextMargins(*margins)
 
 
-    # def keyPressEvent(self, event: QKeyEvent) -> None:
-    #     key = event.key()
-    #     enter = key in [Qt.Key.Key_Enter, Qt.Key.Key_Return]
-    #     number_one = Qt.Key.Key_1
+    def keyPressEvent(self, event: QKeyEvent) -> None:
+        key = event.key()
+        enter = key in [Qt.Key.Key_Enter, Qt.Key.Key_Return]
+        number_one = key == Qt.Key.Key_1
 
-    #     if enter:
-    #         print('pressionou enter')
+        if enter:
+            print('pressionou enter')
+            self.signal.emit()
+            return event.ignore()
 
-    #     if number_one:
-    #         print('1')
-        
-    #     return super().keyPressEvent(event) # isso aqui faz aparecer no display, se eu retirar pega o evento mas não aparece
+        if number_one:
+            print('1')
+            self.signal.emit()
+            return super().keyPressEvent(event) # isso aqui faz aparecer no display, se eu retirar pega o evento mas não aparece
 
 
 
@@ -107,7 +111,7 @@ class Window(QMainWindow):
 
 
 
-class Button(QPushButton):
+class Button(QPushButton):   
     def __init__(self, grid, window, *args, **kwargs):
         super().__init__(*args, **kwargs)
         font = self.font()
@@ -117,22 +121,22 @@ class Button(QPushButton):
         
         self.grid = grid
         self.win = window
-        self._special_type = None
+        self.special_type = None
        
 
     def set_special_button(self, button_text):
         self.setProperty('css_class', 'special_button')
 
         if button_text in '+-/*^':
-            self._special_type = 'operator'
+            self.special_type = 'operator'
         elif button_text == '◀':
-            self._special_type = 'del'
+            self.special_type = 'del'
         elif button_text == 'C':
-            self._special_type = 'reset'
+            self.special_type = 'reset'
         elif button_text == '=':
-            self._special_type = 'equal'
+            self.special_type = 'equal'
 
-        return self._special_type
+        return self.special_type
 
 
     def connect_button_clicked(self, special_type):
@@ -148,6 +152,12 @@ class Button(QPushButton):
             slot_method = self.get_delete
         
         return self.clicked.connect(slot_method)
+    
+
+    def connect_signal(self, special_type):
+        if special_type == 'equal':
+            slot_method = self.get_equal
+        self.win.display.signal.connect(slot_method)
 
 
     @Slot()
@@ -282,4 +292,6 @@ class ButtonsGrid(QGridLayout):
                 if button_text in '*/-+^=C◀':
                     button.set_special_button(button_text)
 
-                button.connect_button_clicked(button._special_type)
+                button.connect_button_clicked(button.special_type)
+
+        button.connect_signal(button.special_type)
