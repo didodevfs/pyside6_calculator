@@ -5,7 +5,10 @@ from styles import TEXT_MARGIN, MAIN_FONT_SIZE, MINIMUN_WIDTH
 from tools import reseting_win_attributes
 
 class Display(QLineEdit):
-    signal = Signal()
+    equal_signal = Signal()
+    delete_signal = Signal()
+    reset_signal = Signal()
+    # operator_signal = Signal()
     
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -23,18 +26,31 @@ class Display(QLineEdit):
 
     def keyPressEvent(self, event: QKeyEvent) -> None:
         key = event.key()
+
         enter = key in [Qt.Key.Key_Enter, Qt.Key.Key_Return]
-        number_one = key == Qt.Key.Key_1
+        delete = key in [Qt.Key.Key_Backspace, Qt.Key.Key_Delete]
+        esc = key in [Qt.Key.Key_Escape, Qt.Key.Key_C]
 
         if enter:
             print('pressionou enter')
-            self.signal.emit()
+            self.equal_signal.emit()
             return event.ignore()
+        
+        if delete:
+            print('pressionou backspace')
+            self.delete_signal.emit()
+            return event.ignore()
+        
+        if esc:
+            print('pressionou esc ou "c"')
+            self.reset_signal.emit()
+            return event.ignore()          
 
-        if number_one:
-            print('1')
-            self.signal.emit()
-            return super().keyPressEvent(event) # isso aqui faz aparecer no display, se eu retirar pega o evento mas não aparece
+
+        # if number_one:
+        #     print('1')
+        #     self.equal_signal.emit()
+        #     return super().keyPressEvent(event) # isso aqui faz aparecer no display, se eu retirar pega o evento mas não aparece
 
 
 
@@ -139,25 +155,25 @@ class Button(QPushButton):
         return self.special_type
 
 
-    def connect_button_clicked(self, special_type):
+    def connect_button(self, special_type):
         if not special_type:
             slot_method = self.get_number
         if special_type == 'operator':
             slot_method = self.get_operator
         if special_type == 'equal':
             slot_method = self.get_equal
+            signal = self.win.display.equal_signal
+            signal.connect(slot_method)
         if special_type == 'reset':
             slot_method = self.get_reset
+            signal = self.win.display.reset_signal
+            signal.connect(slot_method)
         if special_type == 'del':
             slot_method = self.get_delete
+            signal = self.win.display.delete_signal
+            signal.connect(slot_method)
         
         return self.clicked.connect(slot_method)
-    
-
-    def connect_signal(self, special_type):
-        if special_type == 'equal':
-            slot_method = self.get_equal
-        self.win.display.signal.connect(slot_method)
 
 
     @Slot()
@@ -268,6 +284,7 @@ class Button(QPushButton):
         self.win.display.setText('🐍 DidoDevFS 🐍')
 
 
+
 class ButtonsGrid(QGridLayout):
     def __init__(self, window, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -289,9 +306,8 @@ class ButtonsGrid(QGridLayout):
             for j, button_text in enumerate(mask_list):
                 button = Button(self, window, button_text)
                 self.addWidget(button, i, j)
+                
                 if button_text in '*/-+^=C◀':
                     button.set_special_button(button_text)
 
-                button.connect_button_clicked(button.special_type)
-
-        button.connect_signal(button.special_type)
+                button.connect_button(button.special_type)
