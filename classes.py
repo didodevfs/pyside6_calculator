@@ -232,7 +232,16 @@ class Button(QPushButton):
                 self.win.operator = button_text
                 self.win.equation = f'{self.win.first_number} {self.win.operator} '
         else: # self.win.first_number
-            self.win.error_msg_box('Digite um número primeiro')
+            if args:
+                button_text, = args
+            else:
+                button_text = self.text()
+
+            if button_text == '-':
+                # self.win.display.clear()
+                self.win.display.insert(button_text)
+            else:
+                self.win.error_msg_box('Digite um número primeiro')
 
 
     @Slot()
