@@ -8,7 +8,8 @@ class Display(QLineEdit):
     equal_signal = Signal()
     delete_signal = Signal()
     reset_signal = Signal()
-    # operator_signal = Signal()
+    operator_signal = Signal(str)
+    numbers_signal = Signal(str)
     
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -26,31 +27,35 @@ class Display(QLineEdit):
 
     def keyPressEvent(self, event: QKeyEvent) -> None:
         key = event.key()
+        text = event.text()
 
         enter = key in [Qt.Key.Key_Enter, Qt.Key.Key_Return]
         delete = key in [Qt.Key.Key_Backspace, Qt.Key.Key_Delete]
         esc = key in [Qt.Key.Key_Escape, Qt.Key.Key_C]
+        operator = key in [Qt.Key.Key_Plus, Qt.Key.Key_Minus, Qt.Key.Key_Asterisk, Qt.Key.Key_Slash]
+        number = text in '.0123456789'
 
         if enter:
-            print('pressionou enter')
             self.equal_signal.emit()
             return event.ignore()
         
         if delete:
-            print('pressionou backspace')
             self.delete_signal.emit()
             return event.ignore()
         
         if esc:
-            print('pressionou esc ou "c"')
             self.reset_signal.emit()
-            return event.ignore()          
+            return event.ignore()
 
+        if operator:
+            # print('pressionou um operador')
+            self.operator_signal.emit(text)
+            return event.ignore()
 
-        # if number_one:
-        #     print('1')
-        #     self.equal_signal.emit()
-        #     return super().keyPressEvent(event) # isso aqui faz aparecer no display, se eu retirar pega o evento mas não aparece
+        if number:
+            self.numbers_signal.emit(text)
+            return event.ignore()
+            # return super().keyPressEvent(event)
 
 
 
@@ -155,30 +160,24 @@ class Button(QPushButton):
         return self.special_type
 
 
-    def connect_button(self, special_type):
+    def connect_button_clicked(self, special_type):
         if not special_type:
             slot_method = self.get_number
         if special_type == 'operator':
             slot_method = self.get_operator
         if special_type == 'equal':
             slot_method = self.get_equal
-            signal = self.win.display.equal_signal
-            signal.connect(slot_method)
         if special_type == 'reset':
             slot_method = self.get_reset
-            signal = self.win.display.reset_signal
-            signal.connect(slot_method)
         if special_type == 'del':
             slot_method = self.get_delete
-            signal = self.win.display.delete_signal
-            signal.connect(slot_method)
         
         return self.clicked.connect(slot_method)
 
 
     @Slot()
-    def get_number(self):
-        if self.text() == '🐍':
+    def get_number(self, *args):
+        if not args and self.text() == '🐍':
             self._didodev()
 
         if self.win.result or self.win.result == 0.0:
@@ -186,7 +185,10 @@ class Button(QPushButton):
         
         if not self.win.operator:
             try:
-                button_text = self.text()
+                if args:
+                    button_text, = args
+                else:
+                    button_text = self.text()
                 input = self.win.display.text() + button_text
                 self.win.first_number = float(input)
                 self.win.display.insert(button_text)
@@ -198,7 +200,10 @@ class Button(QPushButton):
         
         else:
             try:
-                button_text = self.text()
+                if args:
+                    button_text, = args
+                else:
+                    button_text = self.text()
                 input_test = self.win.display.text() + button_text
                 self.win.second_number = float(input_test)
                 self.win.display.insert(button_text)
@@ -209,7 +214,7 @@ class Button(QPushButton):
 
 
     @Slot()
-    def get_operator(self):
+    def get_operator(self, *args):
         if self.win.result or self.win.result == 0.0:
             self._result_to_first_number()
 
@@ -217,7 +222,10 @@ class Button(QPushButton):
             if self.win.second_number or self.win.second_number == 0.0:
                 self.win.error_msg_box('Você não pode adicionar outro operador neste momento')
             else:
-                button_text = self.text()
+                if args:
+                    button_text, = args
+                else:
+                    button_text = self.text()
                 self.win.display.clear()
                 self.win.operator = button_text
                 self.win.equation = f'{self.win.first_number} {self.win.operator} '
@@ -302,6 +310,7 @@ class ButtonsGrid(QGridLayout):
 
     def _add_mask_to_grid(self): # Prof usou expressão regular (aula 357)
         window = self.window
+
         for i, mask_list in enumerate(self._grid_mask):
             for j, button_text in enumerate(mask_list):
                 button = Button(self, window, button_text)
@@ -310,4 +319,10 @@ class ButtonsGrid(QGridLayout):
                 if button_text in '*/-+^=C◀':
                     button.set_special_button(button_text)
 
-                button.connect_button(button.special_type)
+                button.connect_button_clicked(button.special_type)
+
+        self.window.display.numbers_signal.connect(button.get_number)
+        self.window.display.operator_signal.connect(button.get_operator)
+        self.window.display.equal_signal.connect(button.get_equal)
+        self.window.display.reset_signal.connect(button.get_reset)
+        self.window.display.delete_signal.connect(button.get_delete)
