@@ -15,6 +15,8 @@ class Display(QLineEdit):
         super().__init__(*args, **kwargs)
         self.set_style()
 
+        # self.setReadOnly(True) # não permitirá que o usuário digite algo no display (eu também precisaria excluir o método keyPressEvent)
+
 
     def set_style(self):
         margins = [TEXT_MARGIN for _ in range(4)] # porque é necessário passar 4 parâmetros: left, top, right, bottom. Então essa list comprehension passa o TEXT_MARGIN para os 4
@@ -286,6 +288,7 @@ class Button(QPushButton):
         first_number = self.win.result
         reseting_win_attributes(self.win)
         self.win.first_number = first_number
+
 
     def _didodev(self):
         self.get_reset()
