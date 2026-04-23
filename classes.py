@@ -214,6 +214,8 @@ class Button(QPushButton):
                 print(error)
                 self.win.error_msg_box('Digite um número antes do ponto')
 
+        self.win.display.setFocus()
+
 
     @Slot()
     def get_operator(self, *args):
@@ -243,6 +245,8 @@ class Button(QPushButton):
             else:
                 self.win.error_msg_box('Digite um número primeiro')
 
+        self.win.display.setFocus()
+
 
     @Slot()
     def get_equal(self):
@@ -268,12 +272,15 @@ class Button(QPushButton):
             except Exception as error:
                 self.win.wtf_msg_box('Que danado de conta é essa?!', self)
                 print(error)
+
+        self.win.display.setFocus()
     
 
     @Slot()
     def get_reset(self):
         self.win.display.clear()
         reseting_win_attributes(self.win)
+        self.win.display.setFocus()
 
 
     @Slot()
@@ -292,6 +299,7 @@ class Button(QPushButton):
                 self.win.first_number = self.win.display.text()
                 self.win.equation = f'{self.win.first_number}'
 
+        self.win.display.setFocus()
     
     def _result_to_first_number(self):
         first_number = self.win.result
