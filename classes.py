@@ -338,3 +338,5 @@ class ButtonsGrid(QGridLayout):
         self.window.display.equal_signal.connect(button.get_equal)
         self.window.display.reset_signal.connect(button.get_reset)
         self.window.display.delete_signal.connect(button.get_delete)
+
+# A AULA 376 DO CURSO ENSINA UMA FORMA DE NÃO FICAR SEMPRE APARECENDO FLOAT QUANDO É INT
